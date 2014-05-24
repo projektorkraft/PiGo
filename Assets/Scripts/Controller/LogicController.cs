@@ -7,7 +7,7 @@ public class LogicController : MonoBehaviour {
 
 	List<C2DCircle> forbiddenShapes;
 
-	Constants.StoneColor toPlay;
+	public Constants.StoneColor toPlay;
 
 	// Use this for initialization
 	void Start () {
@@ -43,9 +43,14 @@ public class LogicController : MonoBehaviour {
 	}
 
 	bool hasPlace(C2DPoint pos) {
+		Debug.Log("checking " + pos.x + " : " + pos.y);
 		foreach (C2DCircle circle in forbiddenShapes) {
+			Debug.Log("against " + circle.Centre.x + " : " + circle.Centre.y);
 			if (circle.Contains(pos)) {
+				Debug.Log("false");
 				return false;
+			} else {
+				Debug.Log("true");
 			}
 		}
 		return true;

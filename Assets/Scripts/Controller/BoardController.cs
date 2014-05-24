@@ -11,6 +11,11 @@ public class BoardController : MonoBehaviour {
 
 	private GameObject _stone;
 
+	void Awake(){
+		guiController.BeServerAction += networkController.BeServer;
+		guiController.ConnectServerAction += networkController.ConnectToServer;
+	}
+
 	// Update is called once per frame
 	void Update () {
 

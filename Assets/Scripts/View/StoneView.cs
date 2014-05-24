@@ -29,6 +29,6 @@ public class StoneView : MonoBehaviour {
 
 	private void updateColor(){
 
-		stoneRenderer.material.color = _color == Constants.StoneColor.Black ? Color.black : Color.white;
+		stoneRenderer.material.color = _color == Constants.StoneColor.Black ? Color.gray : Color.white;
 	}
 }

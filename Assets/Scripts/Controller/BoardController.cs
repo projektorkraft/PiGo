@@ -14,6 +14,12 @@ public class BoardController : MonoBehaviour {
 	void Awake(){
 		guiController.BeServerAction += networkController.BeServer;
 		guiController.ConnectServerAction += networkController.ConnectToServer;
+		networkController.OnMessageReceived += (point) => {
+			if (logicController.addStone (point)){
+				var stoneColor = logicController.toPlay == Constants.StoneColor.Black ? Constants.StoneColor.White : Constants.StoneColor.Black;
+				var stone = GameObjectManager.CreateStone (stoneColor, new Vector3((float)point.x, (float)point.y, 0));
+			}
+		};
 	}
 
 	// Update is called once per frame
@@ -26,22 +32,24 @@ public class BoardController : MonoBehaviour {
 
 		if (inputController.IsEventStart ()) {
 			if (_stone == null) {
-				_stone = GameObjectManager.CreateStone (Constants.StoneColor.White, worldPos);
-				_stone.GetComponent<StoneView>().StoneColor = logicController.toPlay;
+				_stone = GameObjectManager.CreateStone (logicController.toPlay, worldPos);
 			}
 		} else {
 			if (_stone != null){
-				_stone.transform.localPosition = worldPos;
-			}
-			if (inputController.IsEventEnd ()) {
-				if (logicController.addStone(new C2DPoint(_stone.transform.position.x,
-				                                          _stone.transform.position.y))) {
-
-				} else {
-					GameObject.Destroy(_stone);
-				}
+					_stone.transform.localPosition = worldPos;
 				
-				_stone = null;
+				if (inputController.IsEventEnd ()) {
+					var point = new C2DPoint(_stone.transform.position.x,
+					                         _stone.transform.position.y);
+					if (logicController.addStone(point)) {
+						networkController.SendPoint(point);
+
+					} else {
+						GameObject.Destroy(_stone);
+					}
+					
+					_stone = null;
+				}
 			}
 		}
 	}	

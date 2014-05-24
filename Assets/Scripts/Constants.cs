@@ -8,4 +8,6 @@ public class Constants {
 	public enum StoneColor {
 		Black, White
 	}
+
+	public const float stoneSize = 1;
 }

@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 public class LogicController : MonoBehaviour {
 
-	List<C2DCircle> forbiddenShapes;
-	List<C2DPolyArc> blackShape;
-	List<C2DPolyArc> whiteShape;
+	List<C2DHoledPolyArc> forbiddenShapes;
+	List<C2DHoledPolyArc> blackShape;
+	List<C2DHoledPolyArc> whiteShape;
 
 	public Constants.StoneColor toPlay;
 
 	// Use this for initialization
 	void Start () {
-		forbiddenShapes = new List<C2DCircle> ();
-		blackShape = new List<C2DPolyArc>();
-		whiteShape = new List<C2DPolyArc>();
+		forbiddenShapes = new List<C2DHoledPolyArc> ();
+		blackShape = new List<C2DHoledPolyArc>();
+		whiteShape = new List<C2DHoledPolyArc>();
 		toPlay = Constants.StoneColor.Black;
 	}
 
@@ -23,35 +23,42 @@ public class LogicController : MonoBehaviour {
 
 		Constants.StoneColor color = toPlay;
 		//TODO: copy here
-		List<C2DPolyArc> _blackShape = blackShape;
-		List<C2DPolyArc> _whiteShape = whiteShape;
+		List<C2DHoledPolyArc> _blackShape = blackShape;
+		List<C2DHoledPolyArc> _whiteShape = whiteShape;
 		if (hasPlace (pos) && isLegal(pos, color, _blackShape, _whiteShape)) {
-			makeMove (pos, color, blackShape, whiteShape);
+			//makeMove (pos, color, blackShape, whiteShape);
 			afterMove (pos, color);
 			return true;
 		}
 		else return false;
 	}
 
-	void makeMove (C2DPoint pos, Constants.StoneColor color, List<C2DPolyArc> blackShape, List<C2DPolyArc> whiteShape)
-	{
-		//TODO:implement
+	C2DHoledPolyArc makeCircle (C2DPoint pos, float radius) {
+		C2DPolyArc shape = new C2DPolyArc ();
+		
+		shape.SetStartPoint (new C2DPoint(pos.x-radius,pos.y));
+		shape.LineTo (new C2DPoint (pos.x + radius, pos.y), radius, false, true);
+		shape.Close (radius, false, true);
+
+		C2DHoledPolyArc result = new C2DHoledPolyArc ();
+		result.Rim = shape;
+		return result;
 	}
 
- /*
-	void makeMove (C2DPoint pos, Constants.StoneColor color, List<C2DPolyArc> blackShape, List<C2DPolyArc> whiteShape)
+ 
+	void makeMove (C2DPoint pos, Constants.StoneColor color, List<C2DHoledPolyArc> blackShape, List<C2DHoledPolyArc> whiteShape)
 	{
-		C2DPolyArc stoneShape = new C2DPolyArc(new C2DCircle (pos, 1));
+		C2DHoledPolyArc stoneShape = makeCircle (pos, 1);
 
-		List<C2DPolyArc> ownShape;
+		List<C2DHoledPolyArc> ownShape;
 		if (color == Constants.StoneColor.Black) {
 			ownShape = blackShape;
 		} else {
 			ownShape = whiteShape;
 		}
 
-		List<C2DPolyArc> shapesToMerge = new List<C2DPolyArc> ();
-		foreach (C2DPolyArc poly in ownShape) {
+		List<C2DHoledPolyArc> shapesToMerge = new List<C2DHoledPolyArc> ();
+		foreach (C2DHoledPolyArc poly in ownShape) {
 			if (poly.Overlaps(stoneShape)) {
 				shapesToMerge.Add(poly);
 			}
@@ -61,26 +68,27 @@ public class LogicController : MonoBehaviour {
 
 	}
 
-	void merge(C2DPolyArc stoneShape, List<C2DPolyArc> shapesToMerge, List<C2DPolyArc> ownShape) {
+	void merge(C2DHoledPolyArc stoneShape, List<C2DHoledPolyArc> shapesToMerge, List<C2DHoledPolyArc> ownShape) {
 
-		Debug.Log (shapesToMerge [0].GetArea ());
+		List<C2DHoledPolyArc> acc = new List<C2DHoledPolyArc>();
+		CGrid grid = new CGrid ();
+		grid.SetGridSize(0.01f);
 
-		C2DPolyArc stone = stoneShape;
-
-		foreach (C2DPolyArc shape in shapesToMerge) {
-			shapesToMerge.Remove(shape);
+		foreach (C2DHoledPolyArc shape in shapesToMerge) {
+			ownShape.Remove(shape);
 		}
 
-		foreach (C2DPolyArc shape in shapesToMerge) {
-			shape.GetUnion(stone, shapesToMerge, new CGrid());
+		foreach (C2DHoledPolyArc shape in shapesToMerge) {
+			shape.GetUnion(stoneShape, acc, grid);
 		}
 
-		Debug.Log (shapesToMerge [0].GetArea ());
+		ownShape.Add(acc[acc.Count-1]);
+
 	}
-*/
+
 	void afterMove (C2DPoint pos, Constants.StoneColor color)
 	{
-		forbiddenShapes.Add (new C2DCircle (pos, Constants.stoneSize));
+		forbiddenShapes.Add (makeCircle(pos,Constants.stoneSize));
 		if (color == Constants.StoneColor.Black) {
 			toPlay = Constants.StoneColor.White;
 		}
@@ -90,20 +98,15 @@ public class LogicController : MonoBehaviour {
 	}
 
 	bool hasPlace(C2DPoint pos) {
-		Debug.Log("checking " + pos.x + " : " + pos.y);
-		foreach (C2DCircle circle in forbiddenShapes) {
-			Debug.Log("against " + circle.Centre.x + " : " + circle.Centre.y);
+		foreach (C2DHoledPolyArc circle in forbiddenShapes) {
 			if (circle.Contains(pos)) {
-				Debug.Log("false");
 				return false;
-			} else {
-				Debug.Log("true");
 			}
 		}
 		return true;
 	}
 
-	bool isLegal (C2DPoint pos, Constants.StoneColor color, List<C2DPolyArc> _blackShape, List<C2DPolyArc> _whiteShape)
+	bool isLegal (C2DPoint pos, Constants.StoneColor color, List<C2DHoledPolyArc> _blackShape, List<C2DHoledPolyArc> _whiteShape)
 	{
 		return true;
 	}

@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using GeoLib;
 
 public class BoardController : MonoBehaviour {
 
 	public InputController inputController;
+	public LogicController logicController;
 
 	private GameObject _stone;
 
@@ -21,7 +23,14 @@ public class BoardController : MonoBehaviour {
 			if (_stone != null){
 				_stone.transform.localPosition = worldPos;
 			}
-			if (inputController.IsEventEnd ()) {		
+			if (inputController.IsEventEnd ()) {
+				if (logicController.addStone(new C2DPoint(transform.position.x,
+				                                          transform.position.y))) {
+
+				} else {
+					GameObject.Destroy(_stone);
+				}
+				
 				_stone = null;
 			}
 		}

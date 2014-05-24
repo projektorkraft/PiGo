@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GameObjectManager{
 		
-	public static GameObject CreateStone(Constants.StoneColor color, Vector2 position){		
+	public static GameObject CreateStone(Constants.StoneColor color, Vector3 position){		
 		GameObject stone = safeInitialize(Constants.StonePrefabName, position);
 		stone.GetComponent<StoneView> ().StoneColor = color;
 		

@@ -6,11 +6,15 @@ public class BoardController : MonoBehaviour {
 
 	public InputController inputController;
 	public LogicController logicController;
+	public GuiController guiController;
+	public NetworkController networkController;
 
 	private GameObject _stone;
 
 	// Update is called once per frame
 	void Update () {
+
+		if (guiController.IsMenu ()) return;
 
 		var screenPos = Camera.main.ScreenToWorldPoint (inputController.GetPosition ());
 		var worldPos = new Vector3 (screenPos.x, screenPos.y, 0);

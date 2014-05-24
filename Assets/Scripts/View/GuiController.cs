@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GuiController : MonoBehaviour {
 	
-	public int menuWidth = 450;
+	public static int menuWidth = 450;
 		
 	private bool gameRunning = false;
 	private static int MAIN = 0;

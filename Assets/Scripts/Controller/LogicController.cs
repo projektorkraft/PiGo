@@ -29,7 +29,7 @@ public class LogicController : MonoBehaviour {
 
 	void makeMove (C2DPoint pos, Constants.StoneColor color)
 	{
-		forbiddenShapes.Add (new C2DCircle (pos, Constants.stoneSize));
+		forbiddenShapes.Add (new C2DCircle (pos, Constants.StoneSize));
 
 		if (color == Constants.StoneColor.Black) {
 			toPlay = Constants.StoneColor.White;

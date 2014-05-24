@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Constants {
@@ -9,5 +9,5 @@ public class Constants {
 		Black, White
 	}
 
-	public const float stoneSize = 1;
+	public const float StoneSize = 1;
 }

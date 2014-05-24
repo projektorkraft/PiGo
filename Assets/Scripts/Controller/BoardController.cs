@@ -28,7 +28,7 @@ public class BoardController : MonoBehaviour {
 		if (guiController.IsMenu ()) return;
 
 		var screenPos = Camera.main.ScreenToWorldPoint (inputController.GetPosition ());
-		var worldPos = new Vector3 (screenPos.x, screenPos.y, 0);
+		var worldPos = new Vector3 (screenPos.x, screenPos.y, -2);
 
 		if (inputController.IsEventStart ()) {
 			if (_stone == null) {
@@ -36,19 +36,20 @@ public class BoardController : MonoBehaviour {
 			}
 		} else {
 			if (_stone != null){
-					_stone.transform.localPosition = worldPos;
+					_stone.transform.localPosition = worldPos;					
+					_stone.GetComponent<StoneView>().Legal = logicController.HasPlace(new C2DPoint(worldPos.x, worldPos.y));				
 				
 				if (inputController.IsEventEnd ()) {
 					var point = new C2DPoint(_stone.transform.position.x,
 					                         _stone.transform.position.y);
 					if (logicController.addStone(point)) {
 						networkController.SendPoint(point);
-
+						_stone.transform.localPosition = new Vector3(worldPos.x, worldPos.y, 0);
+						_stone.GetComponent<StoneView>().HideBackground();
+						_stone = null;
 					} else {
 						GameObject.Destroy(_stone);
 					}
-					
-					_stone = null;
 				}
 			}
 		}

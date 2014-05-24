@@ -2,6 +2,7 @@
 using System.Collections;
 using GeoLib;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LogicController : MonoBehaviour {
 
@@ -19,7 +20,7 @@ public class LogicController : MonoBehaviour {
 
 		Constants.StoneColor color = toPlay;
 
-		if (hasPlace (pos) && isLegal(pos, color)) {
+		if (HasPlace (pos) && isLegal(pos, color)) {
 			makeMove (pos, color);
 			return true;
 		}
@@ -42,18 +43,8 @@ public class LogicController : MonoBehaviour {
 		return true;
 	}
 
-	bool hasPlace(C2DPoint pos) {
-		Debug.Log("checking " + pos.x + " : " + pos.y);
-		foreach (C2DCircle circle in forbiddenShapes) {
-			Debug.Log("against " + circle.Centre.x + " : " + circle.Centre.y);
-			if (circle.Contains(pos)) {
-				Debug.Log("false");
-				return false;
-			} else {
-				Debug.Log("true");
-			}
-		}
-		return true;
+	public bool HasPlace(C2DPoint pos) {
+		return !forbiddenShapes.Any ((shape) => shape.Contains (pos));
 	}
 
 }

@@ -44,7 +44,7 @@ public class LogicController : MonoBehaviour {
 			afterMove (pos, color);
 			return true;
 		}
-		else return false;
+		return false;
 	}
 
 	C2DHoledPolyArc makeCircle (C2DPoint pos, float radius) {
@@ -66,48 +66,48 @@ public class LogicController : MonoBehaviour {
 	void makeMove (C2DPoint pos, Constants.StoneColor color, List<C2DHoledPolyArc> blackShape, List<C2DHoledPolyArc> whiteShape)
 	{
 		C2DHoledPolyArc stoneShape = makeCircle (pos, 1);
-
+		
 		List<C2DHoledPolyArc> ownShape;
 		if (color == Constants.StoneColor.Black) {
 			ownShape = blackShape;
 		} else {
 			ownShape = whiteShape;
 		}
-
+		
 		List<C2DHoledPolyArc> shapesToMerge = new List<C2DHoledPolyArc> ();
 		foreach (C2DHoledPolyArc poly in ownShape) {
 			if (poly.Overlaps(stoneShape)) {
 				shapesToMerge.Add(poly);
 			}
 		}
-
+		
 		merge(stoneShape, shapesToMerge, ownShape);
-
+		
 	}
-
+	
 	void merge(C2DHoledPolyArc stoneShape, List<C2DHoledPolyArc> shapesToMerge, List<C2DHoledPolyArc> ownShape) {
-
+		
 		List<C2DHoledPolyArc> acc = new List<C2DHoledPolyArc>();
 		CGrid grid = new CGrid ();
 		grid.SetGridSize(0.01f);
-
+		
 		if (shapesToMerge.Count == 0) {
 			ownShape.Add(stoneShape);
 			return;
 		}
-
+		
 		foreach (C2DHoledPolyArc shape in shapesToMerge) {
 			ownShape.Remove(shape);
 		}
-
+		
 		foreach (C2DHoledPolyArc shape in shapesToMerge) {
 			shape.GetUnion(stoneShape, acc, grid);
 		}
-
+		
 		ownShape.Add(acc[acc.Count-1]);
-
+		
 	}
-
+	
 	void afterMove (C2DPoint pos, Constants.StoneColor color)
 	{
 		forbiddenShapes.Add (makeCircle(pos,Constants.stoneSize));

@@ -26,7 +26,7 @@ public class LogicController : MonoBehaviour {
 		List<C2DHoledPolyArc> _blackShape = blackShape;
 		List<C2DHoledPolyArc> _whiteShape = whiteShape;
 		if (hasPlace (pos) && isLegal(pos, color, _blackShape, _whiteShape)) {
-			//makeMove (pos, color, blackShape, whiteShape);
+			makeMove (pos, color, blackShape, whiteShape);
 			afterMove (pos, color);
 			return true;
 		}
@@ -37,7 +37,10 @@ public class LogicController : MonoBehaviour {
 		C2DPolyArc shape = new C2DPolyArc ();
 		
 		shape.SetStartPoint (new C2DPoint(pos.x-radius,pos.y));
-		shape.LineTo (new C2DPoint (pos.x + radius, pos.y), radius, false, true);
+
+		for (int i = 0; i < 16; i++) {
+			shape.LineTo(new C2DPoint (pos.x + Mathf.Cos(Mathf.PI*2*i/16)*radius, Mathf.Sin(Mathf.PI*2*i/16)*radius), radius, false, true);
+		}
 		shape.Close (radius, false, true);
 
 		C2DHoledPolyArc result = new C2DHoledPolyArc ();
@@ -74,6 +77,11 @@ public class LogicController : MonoBehaviour {
 		CGrid grid = new CGrid ();
 		grid.SetGridSize(0.01f);
 
+		if (shapesToMerge.Count == 0) {
+			ownShape.Add(stoneShape);
+			return;
+		}
+
 		foreach (C2DHoledPolyArc shape in shapesToMerge) {
 			ownShape.Remove(shape);
 		}
@@ -95,6 +103,8 @@ public class LogicController : MonoBehaviour {
 		else {
 			toPlay = Constants.StoneColor.Black;
 		}
+		Debug.Log (blackShape.Count);
+		Debug.Log (whiteShape.Count);
 	}
 
 	bool hasPlace(C2DPoint pos) {

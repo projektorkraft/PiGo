@@ -50,10 +50,10 @@ public class LogicController : MonoBehaviour {
 	C2DHoledPolyArc makeCircle (C2DPoint pos, float radius) {
 		C2DPolyArc shape = new C2DPolyArc ();
 		
-		shape.SetStartPoint (new C2DPoint(pos.x-radius,pos.y));
+		shape.SetStartPoint (new C2DPoint(pos.x+radius,pos.y));
 
 		for (int i = 0; i < 16; i++) {
-			shape.LineTo(new C2DPoint (pos.x + Mathf.Cos(Mathf.PI*2*i/16)*radius, Mathf.Sin(Mathf.PI*2*i/16)*radius), radius, false, true);
+			shape.LineTo(new C2DPoint (pos.x + Mathf.Cos(Mathf.PI*2*i/16)*radius, pos.y+ Mathf.Sin(Mathf.PI*2*i/16)*radius), radius, false, true);
 		}
 		shape.Close (radius, false, true);
 
